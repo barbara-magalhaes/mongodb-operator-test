@@ -1,0 +1,39 @@
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb-default
+  namespace: default
+spec:
+  members: 5
+  version: "6.0.7"
+  type: ReplicaSet
+  security: 
+    authentication:
+     modes: ["SCRAM"] 
+  statefulSet:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mongod 
+              image: quay.io/mongodb/mongodb-community-server:6.0.7-ubi8 
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "500m"
+                limits:
+                  memory: "2Gi"
+                  cpu: "1"
+  users: 
+    - name: admin-user
+      db: admin
+      passwordSecretRef:
+        name: mongodb-credentials
+      roles:
+        - name: clusterAdmin
+          db: admin
+        - name: userAdminAnyDatabase
+          db: admin
+      scramCredentialsSecretName: mongodb-credentials
+  additionalMongodConfig:
+    storage.wiredTiger.engineConfig.journalCompressor: zlib

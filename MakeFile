@@ -1,0 +1,42 @@
+# Diretório do namespace do Mongodb
+NAMESPACE ?= "default"
+
+#Definem as CRDs necessárias para o operador.
+install-crd: 
+	kubectl apply -f crd/mongodbcommunity.mongodb.com_mongodbcommunity.yaml 
+
+#Criação do RBAC
+install-rbc-operator:
+	kubectl apply -f rbac/role.yaml
+	kubectl apply -f rbac/role_binding.yaml
+	kubectl apply -f rbac/service_account.yaml
+
+#Criação do Deplyment do Operador
+install-operator:
+	kubectl apply -f operator/manager.yaml 
+
+#Testar manifesto operator
+test-cluster:
+	kubectl apply -f  mongodb-scram-credentials.yaml--dry-run=client -o yaml
+
+	kubectl apply -f mongodb-community.yaml --dry-run=client -o yaml
+
+#Aplicar segredo do Cluster
+apply-cluster:
+ 	kubectl apply -f mongodb-scram-credentials.yaml
+
+#Criar cluster MongoCommunity
+apply-operator:
+   	kubectl apply -f mongodb-community.yaml
+
+
+# Escalar Replicas (trocar valor do members)
+kubectl apply -f mongodb-community.yaml
+
+
+
+------------
+#Acessar cluster MongoDBComunnity
+
+
+
