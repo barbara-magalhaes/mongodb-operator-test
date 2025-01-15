@@ -35,8 +35,3 @@ kubectl apply -f mongodb-community.yaml
 
 
 
-------------
-#Acessar cluster MongoDBComunnity
-
-
-
